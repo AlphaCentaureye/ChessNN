@@ -7,7 +7,10 @@ def play(move_string, board):
   else:
     try:
       board.push(move)
-      display(board)
+      try:
+        display(board)
+      except:
+        print(board)
       return True
     except Exception as e:
       print(e)
