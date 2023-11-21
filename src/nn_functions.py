@@ -1,4 +1,6 @@
 import tensorflow as tf
+import zipfile
+import os
 
 def define_model():
     model = tf.keras.Sequential()
@@ -23,4 +25,17 @@ def define_model():
 
 def test_gpu():
     print(tf.test.gpu_device_name())
+
+def saveNN(model):
+  path = os.path.join(os.getcwd(), '/savedNNs/nn_model')
+  model.save(path)
+  with zipfile.ZipFile("/savedNNs/chessNN_model.zip", 'w') as zip_ref:
+    zip_ref.write("/savedNNs/chessNN_model")
+
+def loadNN():
+  path = '/savedNNs/nn_model'
+  with zipfile.ZipFile("/savedNNs/chessNN_model.zip", 'r') as zip_ref:
+    zip_ref.extractall()
+  model = tf.keras.models.load_model(path)
+  return model
 
