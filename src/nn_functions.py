@@ -3,6 +3,7 @@ import zipfile
 import os
 
 def define_model():
+    # define model
     model = tf.keras.Sequential()
     model.add(tf.keras.layers.InputLayer(input_shape=(8,8, 13), name="input_layer"))
     model.add(tf.keras.layers.Conv2D(filters=16, kernel_size=1, activation='relu', name="block1_conv1"))
@@ -21,6 +22,11 @@ def define_model():
     model.add(tf.keras.layers.Dense(units=1024, activation='relu'))
     model.add(tf.keras.layers.Dense(units=1024, activation='relu',))
     model.add(tf.keras.layers.Dense(132, activation='softmax', name="output_layer"))
+
+    # compile model
+    opt = tf.keras.optimizers.SGD(learning_rate=0.001, momentum=0.9)
+    model.compile(optimizer=opt, loss='categorical_crossentropy', metrics=['accuracy'])
+
     return model
 
 def test_gpu():
@@ -38,4 +44,8 @@ def loadNN():
     zip_ref.extractall()
   model = tf.keras.models.load_model(path)
   return model
+
+
+def trainModel(numGames):
+    pass
 
