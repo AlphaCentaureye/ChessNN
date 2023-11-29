@@ -10,4 +10,4 @@ agent.init_network()
 #agent.model.summary()
 agent.one_hot_encode(board.board)
 
-#nnfn.saveNN(model)
+#agent.saveNN()
