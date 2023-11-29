@@ -1,11 +1,13 @@
 import tensorflow as tf
+import os
 import chess
-import chess_functions as cfn
-import nn_functions as nnfn
+from environment import Board
+from agent import Agent
 
-board = chess.Board()
-print(board)
+agent = Agent("w")
+board = Board()
+agent.init_network()
+#agent.model.summary()
+agent.one_hot_encode(board.board)
 
-
-model = nnfn.define_model()
-model.summary()
+#nnfn.saveNN(model)

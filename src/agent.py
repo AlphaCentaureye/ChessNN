@@ -14,6 +14,7 @@ PIECE_INDEX_DICT = {"p":0,
                     "k":5,}
 
 TILE_INDEX = [*"abcdefgh"] # split characters into array of the characters
+PAWN_PROMOTION_INDEX = [*"qrbn"]
 
 class Agent(object):
   def __init__(self, color="w"):
@@ -84,13 +85,31 @@ class Agent(object):
     
     return vector
   
-  def one_hot_decode(self, vector):
-    xVector_from = vector[:7]
-    yVector_from = vector[8:15]
-    xVector_to = vector[16:23]
-    yVector_to = vector[24:31]
+  def one_hot_decode(self, vectorIn, boardState):
+    vector = np.array(vectorIn) # make sure that all vectors are numpy arrays
+    xVector_old = vector[:7]
+    yVector_old = vector[8:15]
+    xVector_new = vector[16:23]
+    yVector_new = vector[24:31]
     pawnPromotionVector = vector[32:]
 
+    x_old = TILE_INDEX[np.where(xVector_old == max(xVector_old))[0][0]]
+    y_old = str(np.where(yVector_old == max(yVector_old))[0][0] + 1)
+    x_new = TILE_INDEX[np.where(xVector_new == max(xVector_new))[0][0]]
+    y_new = str(np.where(yVector_new == max(yVector_new))[0][0] + 1)
+    promote = PAWN_PROMOTION_INDEX[np.where(pawnPromotionVector == max(pawnPromotionVector))[0][0]]
+
+    movePromote = chess.Move.from_uci(x_old+y_old+x_new+y_new+promote)
+    moveNormal = chess.Move.from_uci(x_old+y_old+x_new+y_new)
+
+    if movePromote in boardState.legal_moves:
+      return movePromote
+    elif moveNormal in boardState.legal_moves:
+      return moveNormal
+    else:
+      return False
+    
 
 
-    return
+
+
