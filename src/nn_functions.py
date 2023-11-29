@@ -13,6 +13,8 @@ PIECE_INDEX_DICT = {"p":0,
                     "q":4,
                     "k":5,}
 
+TILE_INDEX = [*"abcdefgh"] # split characters into array of the characters
+
 class Agent(object):
   def __init__(self, color="w"):
     if color == "w":
@@ -41,7 +43,7 @@ class Agent(object):
       model.add(tf.keras.layers.Flatten())
       model.add(tf.keras.layers.Dense(units=1024, activation='relu'))
       model.add(tf.keras.layers.Dense(units=1024, activation='relu',))
-      model.add(tf.keras.layers.Dense(132, activation='softmax', name="output_layer"))
+      model.add(tf.keras.layers.Dense(36, activation='softmax', name="output_layer"))
 
       # compile model
       opt = tf.keras.optimizers.SGD(learning_rate=0.001, momentum=0.9)
@@ -81,3 +83,14 @@ class Agent(object):
       vector[7, :, :] = 1
     
     return vector
+  
+  def one_hot_decode(self, vector):
+    xVector_from = vector[:7]
+    yVector_from = vector[8:15]
+    xVector_to = vector[16:23]
+    yVector_to = vector[24:31]
+    pawnPromotionVector = vector[32:]
+
+
+
+    return
