@@ -31,20 +31,20 @@ class Agent(object):
       model.add(tf.keras.layers.InputLayer(input_shape=(8, 8, 8), name="input_layer"))
       model.add(tf.keras.layers.Conv2D(filters=16, kernel_size=1, activation='relu', name="block1_conv1"))
       model.add(tf.keras.layers.Conv2D(filters=32, kernel_size=1, activation='relu', name="block1_conv2"))
-      model.add(tf.keras.layers.Conv2D(filters=32, kernel_size=1, activation='relu', name="block1_conv3"))
+      model.add(tf.keras.layers.Conv2D(filters=64, kernel_size=1, activation='relu', name="block1_conv3"))
       model.add(tf.keras.layers.Resizing(height=128, width=128, interpolation='bilinear', crop_to_aspect_ratio=False))
-      model.add(tf.keras.layers.Conv2D(filters=64, kernel_size=1, activation='relu', name="block2_conv1"))
-      model.add(tf.keras.layers.Conv2D(filters=128, kernel_size=1, activation='relu', name="block2_conv2"))
-      model.add(tf.keras.layers.Conv2D(filters=128, kernel_size=1, activation='relu', name="block2_conv3"))
+      model.add(tf.keras.layers.Conv2D(filters=128, kernel_size=1, activation='relu', name="block2_conv1"))
+      model.add(tf.keras.layers.Conv2D(filters=256, kernel_size=1, activation='relu', name="block2_conv2"))
+      model.add(tf.keras.layers.Conv2D(filters=512, kernel_size=1, activation='relu', name="block2_conv3"))
       model.add(tf.keras.layers.MaxPooling2D(pool_size=(2, 2)))
-      model.add(tf.keras.layers.Conv2D(filters=256, kernel_size=1, activation='relu', name="block3_conv1"))
-      model.add(tf.keras.layers.Conv2D(filters=512, kernel_size=1, activation='relu', name="block3_conv2"))
-      model.add(tf.keras.layers.Conv2D(filters=512, kernel_size=1, activation='relu', name="block3_conv3"))
-      model.add(tf.keras.layers.MaxPooling2D(pool_size=(5, 5)))
-      model.add(tf.keras.layers.Flatten())
-      model.add(tf.keras.layers.Dense(units=1024, activation='relu'))
+      model.add(tf.keras.layers.Conv2D(filters=512, kernel_size=1, activation='relu', name="block3_conv1"))
+      model.add(tf.keras.layers.Conv2D(filters=1024, kernel_size=1, activation='relu', name="block3_conv2"))
+      model.add(tf.keras.layers.Conv2D(filters=2048, kernel_size=1, activation='relu', name="block3_conv3"))
+      #model.add(tf.keras.layers.MaxPooling2D(pool_size=(5, 5)))
+      #model.add(tf.keras.layers.Flatten())
+      model.add(tf.keras.layers.Dense(units=2048, activation='relu'))
       model.add(tf.keras.layers.Dense(units=1024, activation='relu',))
-      model.add(tf.keras.layers.Dense(36, activation='softmax', name="output_layer"))
+      model.add(tf.keras.layers.Dense(1, activation='softmax', name="output_layer"))
 
       # compile model
       opt = tf.keras.optimizers.SGD(learning_rate=0.001, momentum=0.9)
@@ -87,27 +87,24 @@ class Agent(object):
   
   def one_hot_decode(self, vectorIn, boardState):
     vector = np.array(vectorIn) # make sure that all vectors are numpy arrays
-    xVector_old = vector[:7]
-    yVector_old = vector[8:15]
-    xVector_new = vector[16:23]
-    yVector_new = vector[24:31]
-    pawnPromotionVector = vector[32:]
 
-    x_old = TILE_INDEX[np.where(xVector_old == max(xVector_old))[0][0]]
-    y_old = str(np.where(yVector_old == max(yVector_old))[0][0] + 1)
-    x_new = TILE_INDEX[np.where(xVector_new == max(xVector_new))[0][0]]
-    y_new = str(np.where(yVector_new == max(yVector_new))[0][0] + 1)
-    promote = PAWN_PROMOTION_INDEX[np.where(pawnPromotionVector == max(pawnPromotionVector))[0][0]]
+    while True:
+      oldTiles, newTiles = np.where(vector == np.max(vector))
+      oldTiles = [chess.square_name(x) for x in oldTiles]
+      newTiles = [chess.square_name(x) for x in newTiles]
+      moves = [oldTiles[x] + newTiles[x] for x in range(len(oldTiles))]
+      for move in moves:
+        movePromote = chess.Move.from_uci(move+'q')
+        moveNormal = chess.Move.from_uci(move)
 
-    movePromote = chess.Move.from_uci(x_old+y_old+x_new+y_new+promote)
-    moveNormal = chess.Move.from_uci(x_old+y_old+x_new+y_new)
-
-    if movePromote in boardState.legal_moves:
-      return movePromote
-    elif moveNormal in boardState.legal_moves:
-      return moveNormal
-    else:
-      return False
+        if movePromote in boardState.legal_moves:
+          return movePromote
+        elif moveNormal in boardState.legal_moves:
+          return moveNormal
+      vector[vector == np.max(vector)] = 0 # set max to 0, then cycle back and check the next highest value for legal moves
+        
+        
+      return False # if no moves are valid??? just a backup case...
     
 
 
