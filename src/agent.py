@@ -70,23 +70,25 @@ class Agent(object):
 
   def trainModel(self, numGames):
       pass
-
-  def one_hot_encode(self, boardState):
+  
+  @staticmethod
+  def one_hot_encode(boardState, color=chess.WHITE):
     vector = np.zeros(shape=(8,8,8))
     for square in range(64):
       piece = str(boardState.piece_at(square))
       if piece != "None":
         vector[PIECE_INDEX_DICT[piece.lower()]][7-square//8][square%8] = int(piece.isupper()) * 2 - 1
     
-    if boardState.turn == self.color:
+    if boardState.turn == color:
       vector[6, :, :] = 1 / boardState.fullmove_number
     if boardState.can_claim_draw():
       vector[7, :, :] = 1
     
     return vector
   
-  def one_hot_decode(self, vectorIn, boardState):
-    vector = np.array(vectorIn) # make sure that all vectors are numpy arrays
+  @staticmethod
+  def one_hot_decode(vectorIn, boardState):
+    vector = np.array(vectorIn) # make sure that vector is a numpy array
 
     while True:
       oldTiles, newTiles = np.where(vector == np.max(vector))
@@ -102,9 +104,6 @@ class Agent(object):
         elif moveNormal in boardState.legal_moves:
           return moveNormal
       vector[vector == np.max(vector)] = 0 # set max to 0, then cycle back and check the next highest value for legal moves
-        
-        
-      return False # if no moves are valid??? just a backup case...
     
 
 
