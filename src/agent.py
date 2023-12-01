@@ -131,9 +131,9 @@ class Agent(object):
     
     return vector
   
-  @staticmethod # need to change
+  @staticmethod
   def one_hot_decode(vectorIn, boardState):
-    vector = np.array(vectorIn) # make sure that vector is a numpy array
+    vector = np.reshape(vectorIn, (64,64)) # make sure that vector is a numpy array
 
     while True:
       oldTiles, newTiles = np.where(vector == np.max(vector))
