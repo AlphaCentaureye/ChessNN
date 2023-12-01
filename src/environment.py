@@ -12,21 +12,24 @@ class Board(object):
   def init_action_space(self):
     self.action_space = np.zeros((64, 64))
 
-  def step(self, action, doRandomMove=True):
+  def step(self, action, doRandomMove=False, staticAgent=None, networkColor=chess.WHITE):
     board_value_before = self.get_board_value()
     self.board.push(action)
     board_value_after = self.get_board_value()
     reward = board_value_before - board_value_after
     if self.board.result() == '*':
       if doRandomMove:
-        random_move = self.random_action()
-        self.board.push(random_move)
-        if self.board.result() == '*':
-          keep_going = True
-        else:
-          keep_going = False
+        self.board.push(self.random_action())
       else:
-        pass
+        move = Agent.one_hot_decode(staticAgent.predict(Agent.one_hot_encode(self.board, not(networkColor))))
+        if move:
+          self.board.push(move)
+        else:
+          self.board.push(self.random_action())
+      if self.board.result() == '*':
+        keep_going = True
+      else:
+        keep_going = False
     else:
       keep_going = False
     if self.board.is_game_over():
