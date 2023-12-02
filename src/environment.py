@@ -4,10 +4,11 @@ from agent import Agent
 
 
 class Board(object):
-  def __init__(self, FEN=None):
+  def __init__(self, FEN=None, reward_factor=0.01):
     self.FEN = FEN
     self.board = chess.Board(self.FEN) if self.FEN else chess.Board()
     self.init_action_space()
+    self.rew_mult = reward_factor
 
   def init_action_space(self):
     self.action_space = np.zeros((64, 64))
@@ -16,7 +17,7 @@ class Board(object):
     board_value_before = self.get_board_value()
     self.board.push(action)
     board_value_after = self.get_board_value()
-    reward = board_value_before - board_value_after
+    reward = (board_value_before - board_value_after + 3*self.board.is_check()) * self.rew_mult
     if self.board.result() == '*':
       if doRandomMove:
         self.board.push(self.random_action())
@@ -33,7 +34,11 @@ class Board(object):
     else:
       keep_going = False
     if self.board.is_game_over():
-      reward = 0
+      result = self.board.result()
+      if result == '1-0':
+        reward += (2 * networkColor - 1) * 27 * self.rew_mult
+      elif result == '0-1':
+        reward -= (2 * networkColor - 1) * 27 * self.rew_mult
       keep_going = False
     return keep_going, reward
           

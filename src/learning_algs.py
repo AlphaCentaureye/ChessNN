@@ -1,5 +1,7 @@
 import numpy as np
+import chess
 from chess.pgn import Game
+from agent import Agent
 
 
 
@@ -30,8 +32,26 @@ class Q_learn(object):
         turnNumber = 0
         epsilonGreedy = max(0.05, 1 / (1 + (explorationRate / 250))) if not(greedy) else 0.0
         while not(episodeEnd):
-            
-            break
+            state = Agent.one_hot_encode(self.env.board, chess.WHITE)
+            explore = np.random.uniform(0,1) < epsilonGreedy
+            if explore:
+                move = self.env.random_action()
+                original_pos = move.from_square
+                dest_pos = move.to_square
+            else:
+                action_values = self.agent.find_move(np.expand_dims(state, axis=0))
+                action_values = np.reshape(np.squeeze(action_values), (64,64))
+                action_space = self.env.moves_to_action_sapace()
+                action_values = np.multiply(action_space, action_values)
+                move_from = np.argmax(action_values, axis=None) // 64
+                move_to = np.argmax(action_values, axis=None) % 64
+                moves = [x for x in self.env.board.legal_moves if x.from_square == move_from and x.to_square == move_to]
+                if len(moves) == 0:  # If all legal moves have negative action value, explore.
+                    move = self.env.get_random_action()
+                    move_from = move.from_square
+                    move_to = move.to_square
+                else:
+                    move = np.random.choice(moves)  # If there are multiple max-moves, pick a random one.
 
 
 

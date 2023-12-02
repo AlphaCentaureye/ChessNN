@@ -31,6 +31,7 @@ class Agent(object):
   def init_network(self):
     # define model
     model = tf.keras.Sequential()
+    
     model.add(tf.keras.layers.InputLayer(input_shape=(8, 8, 8), name="input_layer"))
     model.add(tf.keras.layers.Conv2D(filters=16, kernel_size=1, activation='relu', name="block1_conv1"))
     model.add(tf.keras.layers.Conv2D(filters=32, kernel_size=1, activation='relu', name="block1_conv2"))
@@ -48,11 +49,13 @@ class Agent(object):
     model.add(tf.keras.layers.Dense(units=2048, activation='relu'))
     #model.add(tf.keras.layers.Dense(units=1024, activation='relu',))
     model.add(tf.keras.layers.Dense(4096, activation='softmax', name="output_layer"))
+    
+    #model.add(dense)
 
     # compile model
     opt = tf.keras.optimizers.SGD(learning_rate=0.001, momentum=0.9)
     model.compile(optimizer=opt, loss='categorical_crossentropy', metrics=['accuracy'])
-
+    
     self.model = model
 
   def freeze_model(self):
@@ -133,7 +136,7 @@ class Agent(object):
   
   @staticmethod
   def one_hot_decode(vectorIn, boardState):
-    vector = np.reshape(vectorIn, (64,64)) # make sure that vector is a numpy array
+    vector = np.reshape(np.squeeze(vectorIn), (64,64)) # make sure that vector is a numpy array
 
     while True:
       oldTiles, newTiles = np.where(vector == np.max(vector))
