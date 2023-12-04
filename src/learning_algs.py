@@ -74,7 +74,7 @@ class Q_learn(object):
             self.samp_probabilities.append(1)
             self.reward_trace.append(reward)
             self.update_agent(turnNumber)
-        print('play instance ended, onto next one')
+            
         return self.env.board
     
 
