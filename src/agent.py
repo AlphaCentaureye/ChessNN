@@ -109,6 +109,8 @@ class Agent(object):
 
   def saveNN(self):
     try:
+      if not(os.path.exists('savedNNs')):
+        os.mkdir('savedNNs')
       path = os.path.join(os.getcwd(), '/savedNNs/nn_model')
       self.model.save(path)
       with zipfile.ZipFile("/savedNNs/chessNN_model.zip", 'w') as zip_ref:
