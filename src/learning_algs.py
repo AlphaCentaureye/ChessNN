@@ -15,19 +15,19 @@ class Q_learn(object):
         self.reward_trace = []
         self.samp_probabilities = []
 
-    def learn(self, iterations=100, updateThreshold=10, explorationRateRatio=250):
+    def learn(self, iterations=100, updateThreshold=10, explorationRateRatio=250, display=False):
         for x in range(iterations):
             if x % updateThreshold == 0:
                 print("iteration: ", x)
                 self.agent.freeze_model()
             greedy = True if x == iterations - 1 else False
             self.env.reset()
-            self.play(x, greedy=greedy, explorationRateRatio=explorationRateRatio)
+            self.play(x, greedy=greedy, explorationRateRatio=explorationRateRatio, displayBoard=display)
 
         pgn = Game.from_board(self.env.board)
         return pgn
     
-    def play(self, explorationRate, greedy=False, maxMoves=300, explorationRateRatio=250):
+    def play(self, explorationRate, greedy=False, maxMoves=300, explorationRateRatio=250, displayBoard=False):
         # max moves is defaulted to 300 as that should never interfere normally, but should prevent it from going on too long in initial training
         keep_going = True
         turnNumber = 0
@@ -74,10 +74,11 @@ class Q_learn(object):
             self.samp_probabilities.append(1)
             self.reward_trace.append(reward)
             self.update_agent(turnNumber)
-        try:
-            display(self.env.board)
-        except:
-            print(self.env.board)
+            if displayBoard:
+                try:
+                    display(self.env.board)
+                except:
+                    print(self.env.board)
         return self.env.board
     
 
