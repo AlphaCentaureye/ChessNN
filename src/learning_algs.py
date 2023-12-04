@@ -29,10 +29,10 @@ class Q_learn(object):
     
     def play(self, explorationRate, greedy=False, maxMoves=300):
         # max moves is defaulted to 300 as that should never interfere normally, but should prevent it from going on too long in initial training
-        episodeEnd = False
+        keep_going = True
         turnNumber = 0
         epsilonGreedy = max(0.05, 1 / (1 + (explorationRate / 250))) if not(greedy) else 0.0
-        while not(episodeEnd):
+        while keep_going:
             state = Agent.one_hot_encode(self.env.board, chess.WHITE) # white for now
             explore = np.random.uniform(0,1) < epsilonGreedy
             if explore:
