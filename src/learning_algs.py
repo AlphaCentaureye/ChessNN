@@ -16,6 +16,7 @@ class Q_learn(object):
         self.samp_probabilities = []
 
     def learn(self, iterations=100, updateThreshold=10, explorationRateRatio=250, display=False):
+        self.agent.freeze_model()
         for x in range(iterations):
             if x % updateThreshold == 0:
                 print("iteration: ", x)
