@@ -64,7 +64,6 @@ class Agent(object):
     self.frozen_model.set_weights(self.model.get_weights())
 
   def find_move(self, state):
-    print('test2')
     print(np.array(state).shape)
     return np.array(self.frozen_model.predict(np.expand_dims(state, axis=0))).flatten()
   
