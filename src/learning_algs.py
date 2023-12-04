@@ -59,7 +59,7 @@ class Q_learn(object):
                     move_from = move.from_square
                     move_to = move.to_square
 
-            keep_going, reward = self.env.step(move)
+            keep_going, reward = self.env.step(move, doRandomMove=False, staticAgent=self.agent)
             new_state = Agent.one_hot_encode(self.env.board, chess.WHITE) # white for now
             if len(self.memory) > self.memsize:
                 self.memory.pop(0)
