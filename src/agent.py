@@ -151,13 +151,16 @@ class Agent(object):
       newTiles = [chess.square_name(x) for x in newTiles]
       moves = [oldTiles[x] + newTiles[x] for x in range(len(oldTiles))]
       for move in moves:
-        movePromote = chess.Move.from_uci(move+'q')
-        moveNormal = chess.Move.from_uci(move)
+        try:
+          movePromote = chess.Move.from_uci(move+'q')
+          moveNormal = chess.Move.from_uci(move)
 
-        if movePromote in boardState.legal_moves:
-          return movePromote
-        elif moveNormal in boardState.legal_moves:
-          return moveNormal
+          if movePromote in boardState.legal_moves:
+            return movePromote
+          elif moveNormal in boardState.legal_moves:
+            return moveNormal
+        except:
+          pass
       if np.max(vector) == np.min(vector) or np.max(vector) == 0:
         return False # just in case
       vector[vector == np.max(vector)] = 0 # set max to 0, then cycle back and check the next highest value for legal moves
