@@ -20,9 +20,9 @@ class Board(object):
     # print board after bot move
     if displayBoard:
       try:
-        display(self.env.board)
+        display(self.board)
       except:
-        print(self.env.board)
+        print(self.board)
     reward = (board_value_before - board_value_after + 3*self.board.is_check()) * self.rew_mult
     if self.board.result() == '*':
       if doRandomMove:
@@ -40,9 +40,9 @@ class Board(object):
       # print board after opponent move
       if displayBoard:
         try:
-          display(self.env.board)
+          display(self.board)
         except:
-          print(self.env.board)
+          print(self.board)
     else:
       keep_going = False
     if self.board.is_game_over():
