@@ -67,9 +67,7 @@ class Board(object):
 
 
   def play(self, action):
-    if not(action in self.board.legal_moves):
-      return False
-    else:
+    if action in self.board.legal_moves:
       try:
         self.board.push(action)
         try:
@@ -80,6 +78,7 @@ class Board(object):
       except Exception as e:
         print(e)
         return False
+    return False
       
   def reset(self, FEN=None):
     self.FEN = FEN
