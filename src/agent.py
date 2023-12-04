@@ -52,14 +52,14 @@ class Agent(object):
     self.model.add(tf.keras.layers.Dense(4096, activation='softmax', name="output_layer"))
 
     # compile model
-    opt = tf.keras.optimizers.SGD(learning_rate=0.001, momentum=0.9)
+    opt = tf.keras.optimizers.experimental.SGD(learning_rate=0.001, momentum=0.9)
     self.model.compile(optimizer=opt, loss='categorical_crossentropy', metrics=['accuracy'])
     
     #self.model = model
 
   def freeze_model(self):
     self.frozen_model = tf.keras.models.clone_model(self.model)
-    opt = tf.keras.optimizers.SGD(learning_rate=self.lr, momentum=0.0)
+    opt = tf.keras.optimizers.experimental.SGD(learning_rate=self.lr, momentum=0.0, weight_decay=0.0)
     self.frozen_model.compile(optimizer=opt, loss='mse', metrics=['mae'])
     self.frozen_model.set_weights(self.model.get_weights())
 
