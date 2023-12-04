@@ -22,7 +22,7 @@ class Board(object):
       if doRandomMove:
         self.board.push(self.random_action())
       else:
-        move = Agent.one_hot_decode(staticAgent.model.predict(Agent.one_hot_encode(self.board, not(networkColor))))
+        move = Agent.one_hot_decode(staticAgent.model.predict(np.expand_dims(Agent.one_hot_encode(self.board, not(networkColor)), axis=0)))
         if move:
           self.board.push(move)
         else:
