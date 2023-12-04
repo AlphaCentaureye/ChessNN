@@ -18,6 +18,7 @@ PAWN_PROMOTION_INDEX = [*"qrbn"]
 
 class Agent(object):
   def __init__(self, color="w", learningRate=0.001, discount=0.5, verbose=0):
+    self.init_network()
     if color == "w":
       self.color = chess.WHITE
     else:
