@@ -36,6 +36,7 @@ class Q_learn(object):
             state = Agent.one_hot_encode(self.env.board, chess.WHITE) # white for now
             explore = np.random.uniform(0,1) < epsilonGreedy
             if explore:
+                print('test3')
                 move = self.env.random_action()
                 move_from = move.from_square
                 move_to = move.to_square
