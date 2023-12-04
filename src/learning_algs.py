@@ -50,9 +50,9 @@ class Q_learn(object):
                 move_to = np.argmax(action_values, axis=None) % 64
                 movePromote = chess.Move.from_uci(chess.square_name(move_from)+chess.square_name(move_to)+'q')
                 moveNormal = chess.Move.from_uci(chess.square_name(move_from)+chess.square_name(move_to))
-                if movePromote in self.env.legal_moves:
+                if movePromote in self.env.board.legal_moves:
                     move = movePromote
-                elif moveNormal in self.env.legal_moves:
+                elif moveNormal in self.env.board.legal_moves:
                     move = moveNormal
                 else:
                     # this should never be called but it's jsut in case to prevent an error
