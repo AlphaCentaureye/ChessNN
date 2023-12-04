@@ -41,7 +41,7 @@ class Q_learn(object):
                 move_from = move.from_square
                 move_to = move.to_square
             else:
-                action_values = self.agent.find_move(np.expand_dims(state, axis=0))
+                action_values = self.agent.find_move(state)
                 action_values = np.reshape(np.squeeze(action_values), (64,64))
                 action_space = self.env.moves_to_action_sapace()
                 action_values = np.multiply(action_space, action_values)
