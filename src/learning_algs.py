@@ -43,7 +43,7 @@ class Q_learn(object):
             else:
                 action_values = self.agent.find_move(state)
                 action_values = np.reshape(np.squeeze(action_values), (64,64))
-                action_space = self.env.moves_to_action_sapace()
+                action_space = self.env.moves_to_action_space()
                 action_values = np.multiply(action_space, action_values)
                 # argmax with axis none gives the index of the maximum value as if the array was flattened so this gives the board tile positions
                 move_from = np.argmax(action_values, axis=None) // 64
