@@ -59,7 +59,7 @@ class Q_learn(object):
                     move_from = move.from_square
                     move_to = move.to_square
 
-            keep_going, reward = self.env.step(move, doRandomMove=False, staticAgent=self.agent)
+            keep_going, reward = self.env.step(move, doRandomMove=False, staticAgent=self.agent, displayBoard=displayBoard)
             new_state = Agent.one_hot_encode(self.env.board, chess.WHITE) # white for now
             if len(self.memory) > self.memsize:
                 self.memory.pop(0)
@@ -74,11 +74,7 @@ class Q_learn(object):
             self.samp_probabilities.append(1)
             self.reward_trace.append(reward)
             self.update_agent(turnNumber)
-            if displayBoard:
-                try:
-                    display(self.env.board)
-                except:
-                    print(self.env.board)
+            
         return self.env.board
     
 

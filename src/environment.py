@@ -13,10 +13,16 @@ class Board(object):
   def init_action_space(self):
     self.action_space = np.zeros((64, 64))
 
-  def step(self, action, doRandomMove=True, staticAgent=None, networkColor=chess.WHITE):
+  def step(self, action, doRandomMove=True, staticAgent=None, networkColor=chess.WHITE, displayBoard=False):
     board_value_before = self.get_board_value()
     self.board.push(action)
     board_value_after = self.get_board_value()
+    # print board after bot move
+    if displayBoard:
+      try:
+        display(self.env.board)
+      except:
+        print(self.env.board)
     reward = (board_value_before - board_value_after + 3*self.board.is_check()) * self.rew_mult
     if self.board.result() == '*':
       if doRandomMove:
@@ -31,6 +37,12 @@ class Board(object):
         keep_going = True
       else:
         keep_going = False
+      # print board after opponent move
+      if displayBoard:
+        try:
+          display(self.env.board)
+        except:
+          print(self.env.board)
     else:
       keep_going = False
     if self.board.is_game_over():
