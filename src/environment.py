@@ -13,7 +13,7 @@ class Board(object):
   def init_action_space(self):
     self.action_space = np.zeros((64, 64))
 
-  def step(self, action, doRandomMove=True, staticAgent=None, networkColor=chess.WHITE, displayBoard=False):
+  def step(self, action, doRandomMove=True, staticModel=None, networkColor=chess.WHITE, displayBoard=False):
     board_value_before = self.get_board_value()
     self.board.push(action)
     board_value_after = self.get_board_value()
@@ -28,7 +28,7 @@ class Board(object):
       if doRandomMove:
         self.board.push(self.random_action())
       else:
-        move = Agent.one_hot_decode(staticAgent.model.predict(np.expand_dims(Agent.one_hot_encode(self.board, not(networkColor)), axis=0)), self.board)
+        move = Agent.one_hot_decode(staticModel.predict(np.expand_dims(Agent.one_hot_encode(self.board, not(networkColor)), axis=0)), self.board)
         if move:
           self.board.push(move)
         else:
