@@ -64,6 +64,7 @@ class Agent(object):
     self.frozen_model.set_weights(self.model.get_weights())
 
   def find_move(self, state):
+    print(state.shape)
     return self.frozen_model.predict(state)
   
   def update_network(self, batch, epochs=1):
@@ -94,7 +95,6 @@ class Agent(object):
       q_state[idx, move[0], move[1]] = q_target[idx]
     q_state = np.reshape(q_state, (len(batch), 4096))
 
-    print(np.stack(states, axis=0).shape)
     # Perform a step of minibatch Gradient Descent.
     self.model.fit(x=np.stack(states, axis=0), y=q_state, epochs=epochs, verbose=0)
 
