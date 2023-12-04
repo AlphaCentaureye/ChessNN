@@ -108,16 +108,22 @@ class Agent(object):
       print(tf.test.gpu_device_name())
 
   def saveNN(self):
-    path = os.path.join(os.getcwd(), '/savedNNs/nn_model')
-    self.model.save(path)
-    with zipfile.ZipFile("/savedNNs/chessNN_model.zip", 'w') as zip_ref:
-      zip_ref.write("/savedNNs/chessNN_model")
+    try:
+      path = os.path.join(os.getcwd(), '/savedNNs/nn_model')
+      self.model.save(path)
+      with zipfile.ZipFile("/savedNNs/chessNN_model.zip", 'w') as zip_ref:
+        zip_ref.write("/savedNNs/chessNN_model")
+    except Exception as e:
+      print(e)
 
   def loadNN(self):
-    path = '/savedNNs/nn_model'
-    with zipfile.ZipFile("/savedNNs/chessNN_model.zip", 'r') as zip_ref:
-      zip_ref.extractall()
-    self.model = tf.keras.models.load_model(path)
+    try:
+      path = '/savedNNs/nn_model'
+      with zipfile.ZipFile("/savedNNs/chessNN_model.zip", 'r') as zip_ref:
+        zip_ref.extractall()
+      self.model = tf.keras.models.load_model(path)
+    except Exception as e:
+      print(e)
   
   @staticmethod
   def one_hot_encode(boardState, color=chess.WHITE):
@@ -125,7 +131,7 @@ class Agent(object):
     for square in range(64):
       piece = str(boardState.piece_at(square))
       if piece != "None":
-        vector[PIECE_INDEX_DICT[piece.lower()]][7-square//8][square%8] = int(piece.isupper()) * 2 - 1
+        vector[PIECE_INDEX_DICT[piece.lower()]][7-square//8][square%8] = (int(piece.isupper()) if color else int(piece.islower())) * 2 - 1
     
     if boardState.turn == color:
       vector[6, :, :] = 1 / boardState.fullmove_number

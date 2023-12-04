@@ -27,31 +27,76 @@ class Q_learn(object):
         pgn = Game.from_board(self.env.board)
         return pgn
     
-    def play(self, explorationRate, greedy=False, maxMoves=None):
+    def play(self, explorationRate, greedy=False, maxMoves=300):
+        # max moves is defaulted to 300 as that should never interfere normally, but should prevent it from going on too long in initial training
         episodeEnd = False
         turnNumber = 0
         epsilonGreedy = max(0.05, 1 / (1 + (explorationRate / 250))) if not(greedy) else 0.0
         while not(episodeEnd):
-            state = Agent.one_hot_encode(self.env.board, chess.WHITE)
+            state = Agent.one_hot_encode(self.env.board, chess.WHITE) # white for now
             explore = np.random.uniform(0,1) < epsilonGreedy
             if explore:
                 move = self.env.random_action()
-                original_pos = move.from_square
-                dest_pos = move.to_square
+                move_from = move.from_square
+                move_to = move.to_square
             else:
                 action_values = self.agent.find_move(np.expand_dims(state, axis=0))
                 action_values = np.reshape(np.squeeze(action_values), (64,64))
                 action_space = self.env.moves_to_action_sapace()
                 action_values = np.multiply(action_space, action_values)
+                # argmax with axis none gives the index of the maximum value as if the array was flattened so this gives the board tile positions
                 move_from = np.argmax(action_values, axis=None) // 64
                 move_to = np.argmax(action_values, axis=None) % 64
-                moves = [x for x in self.env.board.legal_moves if x.from_square == move_from and x.to_square == move_to]
-                if len(moves) == 0:  # If all legal moves have negative action value, explore.
-                    move = self.env.get_random_action()
+                movePromote = chess.Move.from_uci(chess.square_name(move_from)+chess.square_name(move_to)+'q')
+                moveNormal = chess.Move.from_uci(chess.square_name(move_from)+chess.square_name(move_to))
+                if movePromote in self.env.legal_moves:
+                    move = movePromote
+                elif moveNormal in self.env.legal_moves:
+                    move = moveNormal
+                else:
+                    # this should never be called but it's jsut in case to prevent an error
+                    move = self.env.random_action()
                     move_from = move.from_square
                     move_to = move.to_square
-                else:
-                    move = np.random.choice(moves)  # If there are multiple max-moves, pick a random one.
+
+            keep_going, reward = self.env.step(move)
+            new_state = Agent.one_hot_encode(self.env.board, chess.WHITE) # white for now
+            if len(self.memory) > self.memsize:
+                self.memory.pop(0)
+                self.samp_probabilities.pop(0)
+            turnNumber += 1
+            if turnNumber > maxMoves:
+                keep_going = False
+                reward = 0
+            if not(keep_going):
+                new_state = new_state * 0 # reset everything to 0
+            self.memory.append([state, (move_from, move_to), reward, new_state])
+            self.samp_probabilities.append(1)
+            self.reward_trace.append(reward)
+            self.update_agent(turnNumber)
+
+        return self.env.board
+    
+
+    # grab random moves from memory
+    def sample_memory(self, turncount):
+        minibatch = []
+        memory = self.memory[:-turncount] # first 'turncount' many items from memory
+        probs = self.samp_probabilities[:-turncount]
+        sample_probs = [probs[n] / np.sum(probs) for n in range(len(probs))]
+        # retruns random indices, amount in memory or 1028 of them whichever is smaller, same one can be picked twice, and probability of getting them is weighted
+        indices = np.random.choice(range(len(memory)), min(1028, len(memory)), replace=True, p=sample_probs)
+        for i in indices:
+            minibatch.append(memory[i])
+        return minibatch, indices
+
+
+    def update_agent(self, turncount):
+        if turncount < len(self.memory):
+            minibatch, indices = self.sample_memory(turncount)
+            temp_diff_errors = self.agent.update_network(minibatch)
+            for n, i in enumerate(indices):
+                self.samp_probabilities[i] = np.abs(temp_diff_errors[n])
 
 
 
