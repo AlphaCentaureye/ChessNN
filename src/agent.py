@@ -31,33 +31,31 @@ class Agent(object):
 
   def init_network(self):
     # define model
-    model = tf.keras.Sequential()
+    self.model = tf.keras.Sequential()
     
-    model.add(tf.keras.layers.InputLayer(input_shape=(8, 8, 8), name="input_layer"))
-    model.add(tf.keras.layers.Conv2D(filters=16, kernel_size=1, activation='relu', name="block1_conv1"))
-    model.add(tf.keras.layers.Conv2D(filters=32, kernel_size=1, activation='relu', name="block1_conv2"))
-    model.add(tf.keras.layers.Conv2D(filters=64, kernel_size=1, activation='relu', name="block1_conv3"))
-    model.add(tf.keras.layers.Resizing(height=128, width=128, interpolation='bilinear', crop_to_aspect_ratio=False))
-    model.add(tf.keras.layers.Conv2D(filters=128, kernel_size=1, activation='relu', name="block2_conv1"))
-    model.add(tf.keras.layers.Conv2D(filters=256, kernel_size=1, activation='relu', name="block2_conv2"))
-    model.add(tf.keras.layers.Conv2D(filters=512, kernel_size=1, activation='relu', name="block2_conv3"))
-    model.add(tf.keras.layers.MaxPooling2D(pool_size=(2, 2)))
-    model.add(tf.keras.layers.Conv2D(filters=512, kernel_size=1, activation='relu', name="block3_conv1"))
-    model.add(tf.keras.layers.Conv2D(filters=256, kernel_size=1, activation='relu', name="block3_conv2"))
-    model.add(tf.keras.layers.Conv2D(filters=128, kernel_size=1, activation='relu', name="block3_conv3"))
-    model.add(tf.keras.layers.MaxPooling2D(pool_size=(5, 5)))
-    model.add(tf.keras.layers.Flatten())
-    model.add(tf.keras.layers.Dense(units=2048, activation='relu'))
-    #model.add(tf.keras.layers.Dense(units=1024, activation='relu',))
-    model.add(tf.keras.layers.Dense(4096, activation='softmax', name="output_layer"))
-    
-    #model.add(dense)
+    self.model.add(tf.keras.layers.InputLayer(input_shape=(8, 8, 8), name="input_layer"))
+    self.model.add(tf.keras.layers.Conv2D(filters=16, kernel_size=1, activation='relu', name="block1_conv1"))
+    self.model.add(tf.keras.layers.Conv2D(filters=32, kernel_size=1, activation='relu', name="block1_conv2"))
+    self.model.add(tf.keras.layers.Conv2D(filters=64, kernel_size=1, activation='relu', name="block1_conv3"))
+    self.model.add(tf.keras.layers.Resizing(height=128, width=128, interpolation='bilinear', crop_to_aspect_ratio=False))
+    self.model.add(tf.keras.layers.Conv2D(filters=128, kernel_size=1, activation='relu', name="block2_conv1"))
+    self.model.add(tf.keras.layers.Conv2D(filters=256, kernel_size=1, activation='relu', name="block2_conv2"))
+    self.model.add(tf.keras.layers.Conv2D(filters=512, kernel_size=1, activation='relu', name="block2_conv3"))
+    self.model.add(tf.keras.layers.MaxPooling2D(pool_size=(2, 2)))
+    self.model.add(tf.keras.layers.Conv2D(filters=512, kernel_size=1, activation='relu', name="block3_conv1"))
+    self.model.add(tf.keras.layers.Conv2D(filters=256, kernel_size=1, activation='relu', name="block3_conv2"))
+    self.model.add(tf.keras.layers.Conv2D(filters=128, kernel_size=1, activation='relu', name="block3_conv3"))
+    self.model.add(tf.keras.layers.MaxPooling2D(pool_size=(5, 5)))
+    self.model.add(tf.keras.layers.Flatten())
+    self.model.add(tf.keras.layers.Dense(units=2048, activation='relu'))
+    #self.model.add(tf.keras.layers.Dense(units=1024, activation='relu',))
+    self.model.add(tf.keras.layers.Dense(4096, activation='softmax', name="output_layer"))
 
     # compile model
     opt = tf.keras.optimizers.SGD(learning_rate=0.001, momentum=0.9)
-    model.compile(optimizer=opt, loss='categorical_crossentropy', metrics=['accuracy'])
+    self.model.compile(optimizer=opt, loss='categorical_crossentropy', metrics=['accuracy'])
     
-    self.model = model
+    #self.model = model
 
   def freeze_model(self):
     self.frozen_model = tf.keras.models.clone_model(self.model)
