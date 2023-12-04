@@ -64,8 +64,7 @@ class Agent(object):
     self.frozen_model.set_weights(self.model.get_weights())
 
   def find_move(self, state):
-    print(state.shape)
-    return self.frozen_model.predict(state)
+    return np.array(self.frozen_model.predict(np.expand_dims(state, axis=0))).flatten()
   
   def update_network(self, batch, epochs=1):
     states, moves, rewards, new_states = [], [], [], []
