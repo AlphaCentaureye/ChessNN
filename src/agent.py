@@ -31,7 +31,7 @@ class Agent(object):
 
   def init_network(self):
     # define model
-    self.model = tf.keras.Sequential()
+    '''self.model = tf.keras.Sequential()
     
     self.model.add(tf.keras.layers.InputLayer(input_shape=(8, 8, 8), name="input_layer"))
     self.model.add(tf.keras.layers.Conv2D(filters=16, kernel_size=1, activation='relu', name="block1_conv1"))
@@ -53,9 +53,31 @@ class Agent(object):
 
     # compile model
     opt = tf.keras.optimizers.SGD(learning_rate=0.001, momentum=0.9)
-    self.model.compile(optimizer=opt, loss='categorical_crossentropy', metrics=['accuracy'])
+    self.model.compile(optimizer=opt, loss='categorical_crossentropy', metrics=['accuracy'])'''
     
-    #self.model = model
+    model = tf.keras.Sequential()
+  
+    model.add(tf.keras.layers.InputLayer(input_shape=(8, 8, 8), name="input_layer"))
+    model.add(tf.keras.layers.Conv2D(filters=16, kernel_size=1, activation='relu', name="block1_conv1"))
+    model.add(tf.keras.layers.Conv2D(filters=32, kernel_size=1, activation='relu', name="block1_conv2"))
+    model.add(tf.keras.layers.Conv2D(filters=64, kernel_size=1, activation='relu', name="block1_conv3"))
+    model.add(tf.keras.layers.Resizing(height=64, width=64, interpolation='bilinear', crop_to_aspect_ratio=False))
+    model.add(tf.keras.layers.Dropout(rate=0.05))
+    model.add(tf.keras.layers.Conv2D(filters=128, kernel_size=1, activation='relu', name="block2_conv1"))
+    model.add(tf.keras.layers.Conv2D(filters=64, kernel_size=1, activation='relu', name="block2_conv2"))
+    model.add(tf.keras.layers.Conv2D(filters=32, kernel_size=1, activation='relu', name="block2_conv3"))
+    model.add(tf.keras.layers.MaxPooling2D(pool_size=(8, 8)))
+    model.add(tf.keras.layers.Dropout(rate=0.1))
+    model.add(tf.keras.layers.Flatten())
+    model.add(tf.keras.layers.Dense(units=2048, activation='relu'))
+    #model.add(tf.keras.layers.Dense(units=1024, activation='relu',))
+    model.add(tf.keras.layers.Dense(4096, activation='softmax', name="output_layer"))
+    
+    # compile model
+    opt = tf.keras.optimizers.SGD(learning_rate=0.001, momentum=0.9)
+    model.compile(optimizer=opt, loss='categorical_crossentropy', metrics=['accuracy'])
+
+    self.model = model
 
   def freeze_model(self):
     self.frozen_model = tf.keras.models.clone_model(self.model)
