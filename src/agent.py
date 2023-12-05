@@ -129,21 +129,21 @@ class Agent(object):
   def test_gpu(self):
       print(tf.test.gpu_device_name())
 
-  def saveNN(self):
+  def saveNN(self, savePath='/content/savedNNs'):
     try:
-      if not(os.path.exists('savedNNs')):
-        os.mkdir('savedNNs')
-      path = os.path.join(os.getcwd(), '/savedNNs/nn_model')
+      if not(os.path.exists(savePath)):
+        os.mkdir(savePath)
+      path = os.path.join(savePath, '/nn_model')
       self.model.save(path)
-      with zipfile.ZipFile("/savedNNs/chessNN_model.zip", 'w') as zip_ref:
-        zip_ref.write("/savedNNs/chessNN_model")
+      with zipfile.ZipFile(os.path.join(savePath, "/chessNN_model.zip"), 'w') as zip_ref:
+        zip_ref.write(os.path.join(savePath, "/nn_model"))
     except Exception as e:
       print(e)
 
-  def loadNN(self):
+  def loadNN(self, savePath='/content/savedNNs'):
     try:
-      path = '/savedNNs/nn_model'
-      with zipfile.ZipFile("/savedNNs/chessNN_model.zip", 'r') as zip_ref:
+      path = os.path.join(savePath, '/nn_model')
+      with zipfile.ZipFile(os.path.join(savePath, "/chessNN_model.zip"), 'r') as zip_ref:
         zip_ref.extractall()
       self.model = tf.keras.models.load_model(path)
     except Exception as e:
