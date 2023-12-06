@@ -2,6 +2,7 @@ import numpy as np
 import chess
 from chess.pgn import Game
 from agent import Agent
+import os
 
 
 
@@ -20,6 +21,8 @@ class Q_learn(object):
         for x in range(iterations):
             if backupRate != 0 and x % abs(backupRate) == 0:
                 try:
+                    if not(os.path.exists('/content/savedNNs/' + str(x))):
+                        os.mkdir('/content/savedNNs/' + str(x))
                     self.agent.saveNN('/content/savedNNs/' + str(x))
                     if backupRate > 0:
                         from google.colab import files
