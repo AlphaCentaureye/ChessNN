@@ -92,7 +92,7 @@ class Q_learn(object):
                 new_state = new_state * 0 # reset everything to 0
             self.memory.append([state, (move_from, move_to), reward, new_state])
             self.samp_probabilities.append(1)
-            self.reward_trace.append(reward)
+            #self.reward_trace.append(reward)
             self.update_agent(turnNumber)
 
         return self.env.board
