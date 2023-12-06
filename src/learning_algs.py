@@ -3,6 +3,10 @@ import chess
 from chess.pgn import Game
 from agent import Agent
 import os
+try:
+    from google.colab import files
+except Exception as e:
+    print("couldn't import colab files library:", e)
 
 
 
@@ -25,7 +29,6 @@ class Q_learn(object):
                         os.mkdir(os.path.join('/content/savedNNs/', str(x)))
                     self.agent.saveNN(os.path.join('/content/savedNNs/', str(x)))
                     if backupRate > 0:
-                        from google.colab import files
                         try:
                             files.download(os.path.join('/content/savedNNs/', str(x), '/chessNN_model.zip'))
                             print('model instance downloaded')
