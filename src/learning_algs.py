@@ -15,9 +15,19 @@ class Q_learn(object):
         self.reward_trace = []
         self.samp_probabilities = []
 
-    def learn(self, iterations=100, updateThreshold=10, maxMoves=150, explorationRateRatio=250, explRtOffset = 0, display=False):
+    def learn(self, iterations=100, updateThreshold=10, maxMoves=150, explorationRateRatio=250, explRtOffset = 0, backupRate=10, display=False):
         self.agent.freeze_model()
         for x in range(iterations):
+            if x % backupRate == 0:
+                try:
+                    self.agent.saveNN()
+                    from google.colab import files
+                    try:
+                        files.download('/content/savedNNs/chessNN_model.zip')
+                    except Exception as e:
+                        print(e)
+                except Exception as e:
+                    print(e)
             if x % updateThreshold == 0:
                 print("iteration: ", x)
                 self.agent.freeze_model()
