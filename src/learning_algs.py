@@ -29,9 +29,9 @@ class Q_learn(object):
                         try:
                             files.download('/content/savedNNs/' + str(x) + '/chessNN_model.zip')
                         except Exception as e:
-                            print(e)
+                            print('1:', e)
                 except Exception as e:
-                    print(e)
+                    print('2:', e)
             if x % updateThreshold == 0:
                 print("iteration: ", x)
                 self.agent.freeze_model()
