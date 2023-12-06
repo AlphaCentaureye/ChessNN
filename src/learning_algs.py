@@ -37,6 +37,7 @@ class Q_learn(object):
                 self.agent.freeze_model()
             greedy = True if x == iterations - 1 else False
             self.env.reset()
+            print(x, end=' : ')
             self.play(x, greedy=greedy, maxMoves=maxMoves, explorationRateRatio=explorationRateRatio, explRtOffset=explRtOffset, displayBoard=display)
 
         pgn = Game.from_board(self.env.board)
