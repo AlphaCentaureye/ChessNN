@@ -18,10 +18,10 @@ class Q_learn(object):
     def learn(self, iterations=100, updateThreshold=10, maxMoves=150, explorationRateRatio=250, explRtOffset = 0, backupRate=10, display=False):
         self.agent.freeze_model()
         for x in range(iterations):
-            if x % backupRate == 0:
+            if backupRate != 0 and x % abs(backupRate) == 0:
                 try:
                     self.agent.saveNN('/content/savedNNs/' + str(x))
-                    if backupRate != 0:
+                    if backupRate > 0:
                         from google.colab import files
                         try:
                             files.download('/content/savedNNs/' + str(x) + '/chessNN_model.zip')
