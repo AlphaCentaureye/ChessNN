@@ -19,7 +19,7 @@ class Q_learn(object):
     def learn(self, iterations=100, updateThreshold=10, maxMoves=150, explorationRateRatio=250, explRtOffset = 0, backupRate=10, display=False):
         self.agent.freeze_model()
         for x in range(iterations):
-            if backupRate != 0 and x % abs(backupRate) == 0:
+            if backupRate != 0 and x % abs(backupRate) == 0 and x != 0:
                 try:
                     if not(os.path.exists(os.path.join('/content/savedNNs/', str(x)))):
                         os.mkdir(os.path.join('/content/savedNNs/', str(x)))
