@@ -48,7 +48,7 @@ class Q_learn(object):
         turnNumber = 0
         epsilonGreedy = max(0.05, 1 / (1 + ((explorationRate+explRtOffset) / explorationRateRatio))) if not(greedy) else 0.0
         while keep_going:
-            print(explorationRate, end=' : ')
+            print(explorationRate)
             state = Agent.one_hot_encode(self.env.board, chess.WHITE) # white for now
             explore = np.random.uniform(0,1) < epsilonGreedy
             if explore:
