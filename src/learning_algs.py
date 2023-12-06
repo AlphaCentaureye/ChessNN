@@ -105,7 +105,7 @@ class Q_learn(object):
         probs = self.samp_probabilities[:-turncount]
         sample_probs = [probs[n] / np.sum(probs) for n in range(len(probs))]
         # retruns random indices, amount in memory or 1028 of them whichever is smaller, same one can be picked twice, and probability of getting them is weighted
-        print(sample_probs)
+        print(len(sample_probs), " : ", np.sum(probs))
         indices = np.random.choice(range(len(memory)), min(64, len(memory)), replace=True, p=sample_probs)
         for i in indices:
             minibatch.append(memory[i])
