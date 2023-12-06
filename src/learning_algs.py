@@ -52,7 +52,7 @@ class Q_learn(object):
         turnNumber = 0
         epsilonGreedy = max(0.05, 1 / (1 + ((explorationRate+explRtOffset) / explorationRateRatio))) if not(greedy) else 0.0
         while keep_going:
-            print('\033[92m'+explorationRate+'\033[0m')
+            print(explorationRate)
             state = Agent.one_hot_encode(self.env.board, chess.WHITE) # white for now
             explore = np.random.uniform(0,1) < epsilonGreedy
             if explore:
@@ -106,7 +106,7 @@ class Q_learn(object):
         probs_sum = np.sum(probs)
         sample_probs = [probs[n] / probs_sum for n in range(len(probs))]
         # retruns random indices, amount in memory or 1028 of them whichever is smaller, same one can be picked twice, and probability of getting them is weighted
-        print('\033[93m', len(sample_probs), " : ", np.sum(probs), ' : ', turncount, '\033[0m')
+        print(len(sample_probs), " : ", np.sum(probs), ' : ', turncount)
         indices = np.random.choice(range(len(memory)), min(64, len(memory)), replace=True, p=sample_probs)
         for i in indices:
             minibatch.append(memory[i])
