@@ -28,6 +28,7 @@ class Q_learn(object):
                         from google.colab import files
                         try:
                             files.download(os.path.join('/content/savedNNs/', str(x), '/chessNN_model.zip'))
+                            print('model instance downloaded')
                         except Exception as e:
                             print('1:', e)
                 except Exception as e:
