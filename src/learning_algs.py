@@ -20,10 +20,10 @@ class Q_learn(object):
         for x in range(iterations):
             if x % backupRate == 0:
                 try:
-                    self.agent.saveNN()
+                    self.agent.saveNN('/content/savedNNs/' + str(x))
                     from google.colab import files
                     try:
-                        files.download('/content/savedNNs/chessNN_model.zip')
+                        files.download('/content/savedNNs/' + str(x) + '/chessNN_model.zip')
                     except Exception as e:
                         print(e)
                 except Exception as e:
