@@ -25,13 +25,11 @@ class Q_learn(object):
         for x in range(iterations):
             if backupRate != 0 and x % abs(backupRate) == 0 and x != 0:
                 try:
-                    if not(os.path.exists(os.path.join('/content/savedNNs/', str(x)))):
-                        os.mkdir(os.path.join('/content/savedNNs/', str(x)))
                     self.agent.saveNN(os.path.join('/content/savedNNs/', str(x)))
                     if backupRate > 0:
                         try:
-                            files.download(os.path.join('/content/savedNNs/', str(x), '/chessNN_model.zip'))
-                            print('\033[92m'+'model instance downloaded'+'\033[0m')
+                            files.download(os.path.join('/content/savedNNs/', str(x), 'chessNN_model.zip'))
+                            print('model instance downloaded')
                         except Exception as e:
                             print('1:', e)
                 except Exception as e:
