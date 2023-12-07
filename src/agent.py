@@ -101,7 +101,6 @@ class Agent(object):
       rewards.append(sample[2])
       new_states.append(sample[3])
 
-    # I COPIED THIS FOLLOWING REST OF THIS FUNCTION, BECAUSE I'M NOT COMPLETELY SURE HOW THIS WORKS...
     # The Q target
     q_target = np.array(rewards) + self.discount * np.max(self.model.predict(np.stack(new_states, axis=0), verbose=self.verbose), axis=1)
 
@@ -116,8 +115,6 @@ class Agent(object):
     q_state = np.reshape(q_state, (len(batch), 4096))
 
     # Perform a step of minibatch Gradient Descent.
-    #print(temp_diff_error)
-    #print("     -     " + str((q_state > 1).any()) + "     -     ")
     self.model.fit(x=np.stack(states, axis=0), y=q_state, epochs=epochs, verbose=self.verbose)
 
     return temp_diff_error
