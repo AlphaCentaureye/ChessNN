@@ -100,14 +100,10 @@ class Agent(object):
       moves.append(sample[1])
       rewards.append(sample[2])
       new_states.append(sample[3])
-      if np.array_equal(sample[3], sample[3]*0):
-        episode_ends.append(0)
-      else:
-        episode_ends.append(1)
 
     # I COPIED THIS FOLLOWING REST OF THIS FUNCTION, BECAUSE I'M NOT COMPLETELY SURE HOW THIS WORKS...
     # The Q target
-    q_target = np.array(rewards) + np.array(episode_ends) * self.discount * np.max(self.model.predict(np.stack(new_states, axis=0), verbose=self.verbose), axis=1)
+    q_target = np.array(rewards) + self.discount * np.max(self.model.predict(np.stack(new_states, axis=0), verbose=self.verbose), axis=1)
 
     # The Q value for the remaining actions
     q_state = self.model.predict(np.stack(states, axis=0), verbose=self.verbose)  # batch x 64 x 64
