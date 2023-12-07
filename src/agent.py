@@ -1,5 +1,6 @@
 import tensorflow as tf
 import zipfile
+import shutil
 import os
 import numpy as np
 import chess
@@ -133,8 +134,7 @@ class Agent(object):
     try:
       path = os.path.join(savePath, 'nn_model')
       self.model.save(path)
-      with zipfile.ZipFile(os.path.join(savePath, "chessNN_model.zip"), 'w') as zip_ref:
-        zip_ref.write(path)
+      shutil.make_archive('chessNN_model', 'zip', path)
     except Exception as e:
       print(e)
 
