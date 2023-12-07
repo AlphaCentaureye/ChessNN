@@ -70,7 +70,7 @@ class Agent(object):
     model.add(tf.keras.layers.MaxPooling2D(pool_size=(8, 8)))
     model.add(tf.keras.layers.Dropout(rate=0.1))
     model.add(tf.keras.layers.Flatten())
-    model.add(tf.keras.layers.Dense(units=2048, activation='relu'))
+    model.add(tf.keras.layers.Dense(units=2048, activation='sigmoid'))
     #model.add(tf.keras.layers.Dense(units=1024, activation='relu',))
     model.add(tf.keras.layers.Dense(4096, activation='softmax', name="output_layer"))
     
@@ -112,16 +112,21 @@ class Agent(object):
     q_state = self.model.predict(np.stack(states, axis=0), verbose=self.verbose)  # batch x 64 x 64
 
     # Combine the Q target with the other Q values.
-    q_state = np.reshape(q_state, (len(batch), 64, 64))
+    '''q_state = np.reshape(q_state, (len(batch), 64, 64))
     for idx, move in enumerate(moves):
       temp_diff_error.append(q_state[idx, move[0], move[1]] - q_target[idx])
       q_state[idx, move[0], move[1]] = q_target[idx]
-    q_state = np.reshape(q_state, (len(batch), 4096))
+    q_state = np.reshape(q_state, (len(batch), 4096))'''
 
     # Perform a step of minibatch Gradient Descent.
-    self.model.fit(x=np.stack(states, axis=0), y=q_state, epochs=epochs, verbose=self.verbose)
+    #self.model.fit(x=np.stack(states, axis=0), y=q_state, epochs=epochs, verbose=self.verbose)
+    
+    #return temp_diff_error
 
-    return temp_diff_error
+    self.model.fit(x=np.stack(states, axis=0), y=q_target, epochs=epochs, verbose=self.verbose)
+
+    return q_target - np.squeeze(q_state)
+    
 
 
 
