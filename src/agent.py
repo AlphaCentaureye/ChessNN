@@ -120,7 +120,7 @@ class Agent(object):
 
     # Perform a step of minibatch Gradient Descent.
     print(temp_diff_error)
-    print((q_state > 1).any())
+    print("     -     " + (q_state > 1).any() + "     -     ")
     self.model.fit(x=np.stack(states, axis=0), y=q_state, epochs=epochs, verbose=self.verbose)
 
     return temp_diff_error
