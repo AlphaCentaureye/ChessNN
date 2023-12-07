@@ -116,7 +116,7 @@ class Agent(object):
     for idx, move in enumerate(moves):
       temp_diff_error.append(q_state[idx, move[0], move[1]] - q_target[idx])
       q_state[idx, move[0], move[1]] = q_target[idx]
-      print(q_state[idx, move[0], move[1]])
+      print(q_state.shape)
     q_state = np.reshape(q_state, (len(batch), 4096))
 
     # Perform a step of minibatch Gradient Descent.
