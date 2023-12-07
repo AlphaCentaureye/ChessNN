@@ -76,14 +76,15 @@ class Agent(object):
     
     # compile model
     opt = tf.keras.optimizers.SGD(learning_rate=0.008, momentum=0.0, weight_decay=0.0)
-    model.compile(optimizer=opt, loss='categorical_crossentropy', metrics=['accuracy'])
+    model.compile(optimizer=opt, loss='mse', metrics=['mae'])
+    #model.compile(optimizer=opt, loss='categorical_crossentropy', metrics=['accuracy'])
 
     self.model = model
 
   def freeze_model(self):
     self.frozen_model = tf.keras.models.clone_model(self.model)
     opt = tf.keras.optimizers.SGD(learning_rate=self.lr, momentum=0.0, weight_decay=0.0)
-    self.frozen_model.compile(optimizer=opt, loss='categorical_crossentropy', metrics=['accuracy'])
+    self.frozen_model.compile(optimizer=opt, loss='mse', metrics=['mae'])
     self.frozen_model.set_weights(self.model.get_weights())
 
   def find_move(self, state):
