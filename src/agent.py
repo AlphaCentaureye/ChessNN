@@ -18,7 +18,7 @@ TILE_INDEX = [*"abcdefgh"] # split characters into array of the characters
 PAWN_PROMOTION_INDEX = [*"qrbn"]
 
 class Agent(object):
-  def __init__(self, color="w", learningRate=0.001, discount=0.5, verbose=0):
+  def __init__(self, color="w", learningRate=0.08, discount=0.5, verbose=0):
     self.init_network()
     if color == "w":
       self.color = chess.WHITE
@@ -75,14 +75,14 @@ class Agent(object):
     model.add(tf.keras.layers.Dense(4096, activation='softmax', name="output_layer"))
     
     # compile model
-    opt = tf.keras.optimizers.SGD(learning_rate=0.001, momentum=0.9)
+    opt = tf.keras.optimizers.SGD(learning_rate=self.lr, momentum=0.0, weight_decay=0.0)
     model.compile(optimizer=opt, loss='categorical_crossentropy', metrics=['accuracy'])
 
     self.model = model
 
   def freeze_model(self):
     self.frozen_model = tf.keras.models.clone_model(self.model)
-    opt = tf.keras.optimizers.SGD(learning_rate=self.lr, momentum=0.0)
+    opt = tf.keras.optimizers.SGD(learning_rate=self.lr, momentum=0.0, weight_decay=0.0)
     self.frozen_model.compile(optimizer=opt, loss='mse', metrics=['mae'])
     self.frozen_model.set_weights(self.model.get_weights())
 
