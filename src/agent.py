@@ -112,21 +112,17 @@ class Agent(object):
     q_state = self.model.predict(np.stack(states, axis=0), verbose=self.verbose)  # batch x 64 x 64
 
     # Combine the Q target with the other Q values.
-    '''q_state = np.reshape(q_state, (len(batch), 64, 64))
+    q_state = np.reshape(q_state, (len(batch), 64, 64))
     for idx, move in enumerate(moves):
       temp_diff_error.append(q_state[idx, move[0], move[1]] - q_target[idx])
       q_state[idx, move[0], move[1]] = q_target[idx]
-    q_state = np.reshape(q_state, (len(batch), 4096))'''
+      print(q_target[idx])
+    q_state = np.reshape(q_state, (len(batch), 4096))
 
     # Perform a step of minibatch Gradient Descent.
-    #self.model.fit(x=np.stack(states, axis=0), y=q_state, epochs=epochs, verbose=self.verbose)
-    
-    #return temp_diff_error
+    self.model.fit(x=np.stack(states, axis=0), y=q_state, epochs=epochs, verbose=self.verbose)
 
-    self.model.fit(x=np.stack(states, axis=0), y=q_target, epochs=epochs, verbose=self.verbose)
-
-    return q_target - np.squeeze(q_state)
-    
+    return temp_diff_error
 
 
 
