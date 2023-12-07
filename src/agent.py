@@ -114,8 +114,8 @@ class Agent(object):
     # Combine the Q target with the other Q values.
     q_state = np.reshape(q_state, (len(batch), 64, 64))
     for idx, move in enumerate(moves):
-      temp_diff_error.append(q_state[idx, move[0], move[1]] - q_target[idx])
-      q_state[idx, move[0], move[1]] = q_target[idx]
+      temp_diff_error.append(q_state[idx, move[0], move[1]] + q_target[idx])
+      q_state[idx, move[0], move[1]] += q_target[idx]
     q_state = np.reshape(q_state, (len(batch), 4096))
 
     # Perform a step of minibatch Gradient Descent.

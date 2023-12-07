@@ -4,7 +4,7 @@ from agent import Agent
 
 
 class Board(object):
-  def __init__(self, FEN=None, reward_factor=0.01):
+  def __init__(self, FEN=None, reward_factor=0.02):
     self.FEN = FEN
     self.board = chess.Board(self.FEN) if self.FEN else chess.Board()
     self.init_action_space()
@@ -23,7 +23,7 @@ class Board(object):
         display(self.board)
       except:
         print(self.board)
-    reward = (board_value_before - board_value_after + 3*self.board.is_check()) * self.rew_mult
+    reward = (board_value_after - board_value_before + 3*self.board.is_check()) * self.rew_mult
     if self.board.result() == '*':
       if doRandomMove:
         self.board.push(self.random_action())
