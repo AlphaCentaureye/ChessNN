@@ -67,14 +67,19 @@ class Q_learn(object):
                 # argmax with axis none gives the index of the maximum value as if the array was flattened so this gives the board tile positions
                 move_from = np.argmax(action_values, axis=None) // 64
                 move_to = np.argmax(action_values, axis=None) % 64
-                movePromote = chess.Move.from_uci(chess.square_name(move_from)+chess.square_name(move_to)+'q')
-                moveNormal = chess.Move.from_uci(chess.square_name(move_from)+chess.square_name(move_to))
-                if movePromote in self.env.board.legal_moves:
-                    move = movePromote
-                elif moveNormal in self.env.board.legal_moves:
-                    move = moveNormal
-                else:
-                    # this should never be called but it's jsut in case to prevent an error
+                try:
+                    movePromote = chess.Move.from_uci(chess.square_name(move_from)+chess.square_name(move_to)+'q')
+                    moveNormal = chess.Move.from_uci(chess.square_name(move_from)+chess.square_name(move_to))
+                    if movePromote in self.env.board.legal_moves:
+                        move = movePromote
+                    elif moveNormal in self.env.board.legal_moves:
+                        move = moveNormal
+                    else:
+                        # this should never be called but it's jsut in case to prevent an error
+                        move = self.env.random_action()
+                        move_from = move.from_square
+                        move_to = move.to_square
+                except:
                     move = self.env.random_action()
                     move_from = move.from_square
                     move_to = move.to_square

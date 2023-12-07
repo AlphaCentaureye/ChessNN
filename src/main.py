@@ -16,11 +16,14 @@ agent.init_network()
 #print(agent.model.summary())
 
 learn = Q_learn(agent, environment)
-learn.learn(iterations=30, updateThreshold=1, explorationRateRatio=5, display=True)
 
-try:
-    agent.saveNN() # optional path param, but defaults to path /content/savedNNs/
-except Exception as e:
-    print(e)
+
+for x in range(50):
+    learn.learn(iterations=50, updateThreshold=2, explRtOffset=x*10, explorationRateRatio=300, display=False)
+
+    try:
+        agent.model.save("/" + str(x) + "/")
+    except Exception as e:
+        print(e)
 
 
