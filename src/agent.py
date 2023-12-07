@@ -89,7 +89,7 @@ class Agent(object):
 
   def find_move(self, state):
     print(np.array(state).shape)
-    return np.array(self.frozen_model.predict(np.expand_dims(state, axis=0))).flatten()
+    return np.array(self.model.predict(np.expand_dims(state, axis=0))).flatten()
   
   def update_network(self, batch, epochs=1):
     states, moves, rewards, new_states = [], [], [], []
@@ -107,7 +107,7 @@ class Agent(object):
 
     # I COPIED THIS FOLLOWING REST OF THIS FUNCTION, BECAUSE I'M NOT COMPLETELY SURE HOW THIS WORKS...
     # The Q target
-    q_target = np.array(rewards) + np.array(episode_ends) * self.discount * np.max(self.frozen_model.predict(np.stack(new_states, axis=0), verbose=self.verbose), axis=1)
+    q_target = np.array(rewards) + np.array(episode_ends) * self.discount * np.max(self.model.predict(np.stack(new_states, axis=0), verbose=self.verbose), axis=1)
 
     # The Q value for the remaining actions
     q_state = self.model.predict(np.stack(states, axis=0), verbose=self.verbose)  # batch x 64 x 64
