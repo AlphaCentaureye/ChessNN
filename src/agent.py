@@ -136,7 +136,7 @@ class Agent(object):
         os.mkdir(path)
       self.model.save(path)
       with zipfile.ZipFile(os.path.join(savePath, "chessNN_model.zip"), 'w') as zip_ref:
-        zip_ref.write(os.path.join(savePath, "nn_model"))
+        zip_ref.write(path)
     except Exception as e:
       print(e)
 
