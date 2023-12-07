@@ -75,7 +75,7 @@ class Agent(object):
     model.add(tf.keras.layers.Dense(4096, activation='softmax', name="output_layer"))
     
     # compile model
-    opt = tf.keras.optimizers.SGD(learning_rate=self.lr, momentum=0.0, weight_decay=0.0)
+    opt = tf.keras.optimizers.SGD(learning_rate=0.08, momentum=0.0, weight_decay=0.0)
     model.compile(optimizer=opt, loss='categorical_crossentropy', metrics=['accuracy'])
 
     self.model = model
