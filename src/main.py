@@ -22,7 +22,7 @@ for x in range(50):
     learn.learn(iterations=50, updateThreshold=2, explRtOffset=x*10, explorationRateRatio=300, display=False)
 
     try:
-        agent.model.save("/" + str(x) + "/")
+        agent.saveNN("/networks/" + str(x) + "/")
     except Exception as e:
         print(e)
 
