@@ -59,9 +59,9 @@ class Agent(object):
     model = tf.keras.Sequential()
   
     model.add(tf.keras.layers.InputLayer(input_shape=(8, 8, 8), name="input_layer"))
-    '''model.add(tf.keras.layers.Conv2D(filters=16, kernel_size=1, activation='relu', name="block1_conv1"))
+    model.add(tf.keras.layers.Conv2D(filters=16, kernel_size=1, activation='relu', name="block1_conv1"))
     model.add(tf.keras.layers.Conv2D(filters=32, kernel_size=1, activation='relu', name="block1_conv2"))
-    model.add(tf.keras.layers.Conv2D(filters=64, kernel_size=1, activation='relu', name="block1_conv3"))'''
+    model.add(tf.keras.layers.Conv2D(filters=64, kernel_size=1, activation='relu', name="block1_conv3"))
     model.add(tf.keras.layers.Resizing(height=64, width=64, interpolation='bilinear', crop_to_aspect_ratio=False))
     model.add(tf.keras.layers.Dropout(rate=0.05))
     model.add(tf.keras.layers.Conv2D(filters=128, kernel_size=1, activation='relu', name="block2_conv1"))
