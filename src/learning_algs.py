@@ -91,8 +91,6 @@ class Q_learn(object):
             if turnNumber > maxMoves:
                 keep_going = False
                 reward = 0
-            if not(keep_going):
-                new_state = new_state * 0 # reset everything to 0
             self.memory.append([state, (move_from, move_to), reward, new_state])
             self.samp_probabilities.append(1)
             #self.reward_trace.append(reward)
