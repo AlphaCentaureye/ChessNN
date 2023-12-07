@@ -134,7 +134,7 @@ class Agent(object):
     try:
       path = os.path.join(savePath, 'nn_model')
       self.model.save(path)
-      shutil.make_archive('chessNN_model', 'zip', path)
+      shutil.make_archive(os.path.join(savePath, 'chessNN_model'), 'zip', path)
     except Exception as e:
       print(e)
 
