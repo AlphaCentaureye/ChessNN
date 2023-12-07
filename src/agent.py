@@ -143,7 +143,7 @@ class Agent(object):
       path = os.path.join(savePath, 'nn_model')
       with zipfile.ZipFile(os.path.join(savePath, "chessNN_model.zip"), 'r') as zip_ref:
         zip_ref.extractall('/content/nn_model')
-      self.model = tf.keras.models.load_model('content/nn_model')
+      self.model = tf.keras.models.load_model('/content/nn_model')
     except Exception as e:
       print(e)
   
