@@ -17,6 +17,7 @@ class Board(object):
     board_value_before = self.get_board_value()
     self.board.push(action)
     board_value_after = self.get_board_value()
+    isCheck = self.board.is_check()
     # print board after bot move
     if displayBoard:
       try:
@@ -45,7 +46,7 @@ class Board(object):
       board_value_after = self.get_board_value()
     else:
       keep_going = False
-    reward = (board_value_after - board_value_before + 3*self.board.is_check()) * self.rew_mult
+    reward = (board_value_after - board_value_before - 3*self.board.is_check() + 3*isCheck) * self.rew_mult
     if self.board.is_game_over():
       result = self.board.result()
       if result == '1-0':
