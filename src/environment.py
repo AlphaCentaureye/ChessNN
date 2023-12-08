@@ -4,7 +4,7 @@ from agent import Agent
 
 
 class Board(object):
-  def __init__(self, FEN=None, reward_factor=0.03):
+  def __init__(self, FEN=None, reward_factor=0.2):
     self.FEN = FEN
     self.board = chess.Board(self.FEN) if self.FEN else chess.Board()
     self.init_action_space()
