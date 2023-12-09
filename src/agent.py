@@ -134,20 +134,21 @@ class Agent(object):
 
     # for long term play memory
     # The Q target
-    q_target = np.array(gameRewards)
+    if len(gameStates) > 0:
+      q_target = np.array(gameRewards)
 
-    # The Q value for the remaining actions
-    q_state = self.model.predict(np.stack(gameStates, axis=0), verbose=self.verbose)  # batch x 64 x 64
+      # The Q value for the remaining actions
+      q_state = self.model.predict(np.stack(gameStates, axis=0), verbose=self.verbose)  # batch x 64 x 64
 
-    # Combine the Q target with the other Q values.
-    # no need for temp_diff_error here
-    q_state = np.reshape(q_state, (len(batch), 64, 64))
-    for idx, move in enumerate(gameMoves):
-      q_state[idx, move[0], move[1]] += q_target[idx//10]
-    q_state = np.reshape(q_state, (len(batch), 4096))
+      # Combine the Q target with the other Q values.
+      # no need for temp_diff_error here
+      q_state = np.reshape(q_state, (len(batch), 64, 64))
+      for idx, move in enumerate(gameMoves):
+        q_state[idx, move[0], move[1]] += q_target[idx//10]
+      q_state = np.reshape(q_state, (len(batch), 4096))
 
-    # Perform a step of minibatch Gradient Descent.
-    self.model.fit(x=np.stack(states, axis=0), y=q_state, epochs=epochs, verbose=self.verbose)
+      # Perform a step of minibatch Gradient Descent.
+      self.model.fit(x=np.stack(states, axis=0), y=q_state, epochs=epochs, verbose=self.verbose)
 
     return temp_diff_error
 
