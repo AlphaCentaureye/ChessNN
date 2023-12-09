@@ -144,6 +144,7 @@ class Agent(object):
       # no need for temp_diff_error here
       q_state = np.reshape(q_state, (len(gameStates), 64, 64))
       for idx, move in enumerate(gameMoves):
+        print(move, move[0], move[1])
         q_state[idx, move[0], move[1]] += q_target[idx//10]
       q_state = np.reshape(q_state, (len(gameStates), 4096))
 
