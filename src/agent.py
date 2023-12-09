@@ -178,6 +178,7 @@ class Agent(object):
   
   @staticmethod
   def one_hot_encode(boardState, color=chess.WHITE):
+    color = boardState.turn
     vector = np.zeros(shape=(6,8,8))
     if color:
       for square in range(64):
@@ -199,7 +200,8 @@ class Agent(object):
     return vector
   
   @staticmethod
-  def one_hot_decode(vectorIn, boardState, color=chess.WHITE):
+  def one_hot_decode(vectorIn, boardState):
+    color = boardState.turn
     if color:
       vector = np.reshape(np.squeeze(vectorIn), (64,64)) # make sure that vector is a numpy array
     else:
