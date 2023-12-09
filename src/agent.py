@@ -135,7 +135,7 @@ class Agent(object):
     # for long term play memory
     # The Q target
     if len(gameStates) > 0:
-      q_target = np.array(gameRewards)
+      q_target = np.array(gameRewards) * 0.25
 
       # The Q value for the remaining actions
       q_state = self.model.predict(np.stack(gameStates, axis=0), verbose=self.verbose)  # batch x 64 x 64
