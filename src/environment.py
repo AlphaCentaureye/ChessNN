@@ -9,6 +9,8 @@ class Board(object):
     self.board = chess.Board(self.FEN) if self.FEN else chess.Board()
     self.init_action_space()
     self.rew_mult = reward_factor
+    self.previousPos = np.zeros(shape=(6,8,8))
+    self.updateState = True
 
   def init_action_space(self):
     self.action_space = np.zeros((64, 64))
@@ -17,7 +19,11 @@ class Board(object):
     board_value_before = self.get_board_value()
     self.board.push(action)
     board_value_after = self.get_board_value()
+    repeatPunish = int((self.previousPos == self.encodeState(self.board)).all()) * -2
     isCheck = self.board.is_check()
+    if self.updateState:
+      self.saveState()
+    self.updateState = not(self.updateState)
     # print board after bot move
     if displayBoard:
       try:
@@ -46,7 +52,7 @@ class Board(object):
       board_value_after = self.get_board_value()
     else:
       keep_going = False
-    reward = (board_value_after - board_value_before + 2*(isCheck - self.board.is_check())) * self.rew_mult
+    reward = (board_value_after - board_value_before + repeatPunish + 2*(isCheck - self.board.is_check())) * self.rew_mult
     if self.board.is_game_over():
       result = self.board.result()
       if result == '1-0':
@@ -78,6 +84,21 @@ class Board(object):
     knight_and_bishop = 3 * np.sum(vector[2:4, :, :])
     queen = 9 * np.sum(vector[4, :, :])
     return pawns + rooks + knight_and_bishop + queen
+  
+  def saveState(self, color=chess.WHITE):
+    self.previousPos = np.zeros(shape=(6,8,8))
+    for square in range(64):
+      piece = str(self.board.piece_at(square))
+      if piece != "None":
+        self.previousPos[Agent.PIECE_INDEX_DICT[piece.lower()]][7-square//8][square%8] = (int(piece.isupper()) if color else int(piece.islower()))
+        
+  def encodeState(self, color=chess.WHITE):
+    vector = np.zeros(shape=(6,8,8))
+    for square in range(64):
+      piece = str(self.board.piece_at(square))
+      if piece != "None":
+        vector[Agent.PIECE_INDEX_DICT[piece.lower()]][7-square//8][square%8] = (int(piece.isupper()) if color else int(piece.islower()))
+    return vector
 
 
   def play(self, action):
