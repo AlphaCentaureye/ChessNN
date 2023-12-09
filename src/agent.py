@@ -110,8 +110,8 @@ class Agent(object):
       tempMoves.append(sample[1])
       tempRewards.append(sample[2])
       if i % 10 == 0:
-        idx1 = (i/10)-1
-        idx2 = i/10
+        idx1 = (i//10)-1
+        idx2 = i//10
         gameStates += tempStates[idx1:idx2]
         gameMoves += tempStates[idx1:idx2]
         gameRewards.append(sum(tempStates[idx1:idx2])/10)
