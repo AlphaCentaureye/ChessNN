@@ -179,10 +179,17 @@ class Agent(object):
   @staticmethod
   def one_hot_encode(boardState, color=chess.WHITE):
     vector = np.zeros(shape=(6,8,8))
-    for square in range(64):
-      piece = str(boardState.piece_at(square))
-      if piece != "None":
-        vector[PIECE_INDEX_DICT[piece.lower()]][7-square//8][square%8] = (int(piece.isupper()) if color else int(piece.islower())) * 2 - 1
+    if color:
+      for square in range(64):
+        piece = str(boardState.piece_at(square))
+        if piece != "None":
+          vector[PIECE_INDEX_DICT[piece.lower()]][7-square//8][square%8] = int(piece.isupper()) * 2 - 1
+    else:
+      for sqr in range(-63, 1):
+        square = abs(sqr)
+        piece = str(boardState.piece_at(square))
+        if piece != "None":
+          vector[PIECE_INDEX_DICT[piece.lower()]][7-square//8][square%8] = int(piece.islower()) * 2 - 1
     
     #if boardState.turn == color:
       #vector[6, :, :] = 1 / boardState.fullmove_number
@@ -192,9 +199,11 @@ class Agent(object):
     return vector
   
   @staticmethod
-  def one_hot_decode(vectorIn, boardState):
-    vector = np.reshape(np.squeeze(vectorIn), (64,64)) # make sure that vector is a numpy array
-
+  def one_hot_decode(vectorIn, boardState, color=chess.WHITE):
+    if color:
+      vector = np.reshape(np.squeeze(vectorIn), (64,64)) # make sure that vector is a numpy array
+    else:
+      vector = np.reshape(np.squeeze(np.flip(vectorIn)), (64,64)) # make sure that vector is a numpy array
     while True:
       oldTiles, newTiles = np.where(vector == np.max(vector))
       oldTiles = [chess.square_name(x) for x in oldTiles]
