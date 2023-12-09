@@ -142,10 +142,10 @@ class Agent(object):
 
       # Combine the Q target with the other Q values.
       # no need for temp_diff_error here
-      q_state = np.reshape(q_state, (len(batch), 64, 64))
+      q_state = np.reshape(q_state, (len(gameStates), 64, 64))
       for idx, move in enumerate(gameMoves):
         q_state[idx, move[0], move[1]] += q_target[idx//10]
-      q_state = np.reshape(q_state, (len(batch), 4096))
+      q_state = np.reshape(q_state, (len(gameStates), 4096))
 
       # Perform a step of minibatch Gradient Descent.
       self.model.fit(x=np.stack(states, axis=0), y=q_state, epochs=epochs, verbose=self.verbose)
