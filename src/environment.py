@@ -96,7 +96,7 @@ class Board(object):
     for square in range(64):
       piece = str(self.board.piece_at(square))
       if piece != "None":
-        self.previousPos[Agent.PIECE_INDEX_DICT[piece.lower()]][7-square//8][square%8] = (int(piece.isupper()) if color else int(piece.islower()))
+        self.previousPos[PIECE_INDEX_DICT[piece.lower()]][7-square//8][square%8] = (int(piece.isupper()) if color else int(piece.islower()))
         
   def encodeState(self, color=chess.WHITE):
     vector = np.zeros(shape=(6,8,8))
