@@ -148,7 +148,7 @@ class Agent(object):
       q_state = np.reshape(q_state, (len(gameStates), 4096))
 
       # Perform a step of minibatch Gradient Descent.
-      self.model.fit(x=np.stack(states, axis=0), y=q_state, epochs=epochs, verbose=self.verbose)
+      self.model.fit(x=np.stack(gameStates, axis=0), y=q_state, epochs=epochs, verbose=self.verbose)
 
     return temp_diff_error
 
