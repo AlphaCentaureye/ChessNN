@@ -2,6 +2,12 @@ import chess
 import numpy as np
 from agent import Agent
 
+PIECE_INDEX_DICT = {"p":0,
+                    "r":1,
+                    "n":2,
+                    "b":3,
+                    "q":4,
+                    "k":5,}
 
 class Board(object):
   def __init__(self, FEN=None, reward_factor=0.05):
@@ -97,7 +103,7 @@ class Board(object):
     for square in range(64):
       piece = str(self.board.piece_at(square))
       if piece != "None":
-        vector[Agent.PIECE_INDEX_DICT[piece.lower()]][7-square//8][square%8] = (int(piece.isupper()) if color else int(piece.islower()))
+        vector[PIECE_INDEX_DICT[piece.lower()]][7-square//8][square%8] = (int(piece.isupper()) if color else int(piece.islower()))
     return vector
 
 
