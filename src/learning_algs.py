@@ -17,6 +17,7 @@ class Q_learn(object):
         self.env = env
         self.memsize = memorySize
         self.memory = []
+        self.gameMemory = []
         self.reward_trace = []
         self.samp_probabilities = []
 
@@ -49,6 +50,7 @@ class Q_learn(object):
         keep_going = True
         turnNumber = 0
         epsilonGreedy = max(0.05, 1 / (1 + ((explorationRate+explRtOffset) / explorationRateRatio))) if not(greedy) else 0.0
+        self.gameMemory = []
         while keep_going:
             print(explorationRate)
             state = Agent.one_hot_encode(self.env.board, chess.WHITE) # white for now
@@ -92,6 +94,7 @@ class Q_learn(object):
                 keep_going = False
                 reward = 0
             self.memory.append([state, (move_from, move_to), reward, new_state])
+            self.gameMemory.append([state, (move_from, move_to), reward])
             self.samp_probabilities.append(1)
             #self.reward_trace.append(reward)
             self.update_agent(turnNumber)
@@ -117,7 +120,7 @@ class Q_learn(object):
     def update_agent(self, turncount):
         if turncount < len(self.memory):
             minibatch, indices = self.sample_memory(turncount)
-            temp_diff_errors = self.agent.update_network(minibatch)
+            temp_diff_errors = self.agent.update_network(minibatch, self.gameMemory)
             for n, i in enumerate(indices):
                 self.samp_probabilities[i] = np.abs(temp_diff_errors[n])
 

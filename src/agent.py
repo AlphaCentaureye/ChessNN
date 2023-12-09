@@ -91,15 +91,30 @@ class Agent(object):
     print(np.array(state).shape)
     return np.array(self.model.predict(np.expand_dims(state, axis=0))).flatten()
   
-  def update_network(self, batch, epochs=1):
+  def update_network(self, batch, gameMemory, epochs=1):
     states, moves, rewards, new_states = [], [], [], []
+    gameStates, gameMoves, gameRewards = [], [], []
+    tempStates, tempMoves, tempRewards = [], [], []
     temp_diff_error = []
-    episode_ends = []
     for sample in batch:
       states.append(sample[0])
       moves.append(sample[1])
       rewards.append(sample[2])
       new_states.append(sample[3])
+    # get information on last 10 moves and average rewards
+    # to encourage bot to set up longer actions
+    i = 0
+    for sample in gameMemory:
+      i += 1
+      tempStates.append(sample[0])
+      tempMoves.append(sample[1])
+      tempRewards.append(sample[2])
+      if i % 10 == 0:
+        idx1 = (i/10)-1
+        idx2 = i/10
+        gameStates += tempStates[idx1:idx2]
+        gameMoves += tempStates[idx1:idx2]
+        gameRewards.append(sum(tempStates[idx1:idx2])/10)
 
     # The Q target
     q_target = np.array(rewards) + self.discount * np.max(self.model.predict(np.stack(new_states, axis=0), verbose=self.verbose), axis=1)
@@ -112,6 +127,23 @@ class Agent(object):
     for idx, move in enumerate(moves):
       temp_diff_error.append(q_state[idx, move[0], move[1]] - q_target[idx])
       q_state[idx, move[0], move[1]] += q_target[idx]
+    q_state = np.reshape(q_state, (len(batch), 4096))
+
+    # Perform a step of minibatch Gradient Descent.
+    self.model.fit(x=np.stack(states, axis=0), y=q_state, epochs=epochs, verbose=self.verbose)
+
+    # for long term play memory
+    # The Q target
+    q_target = np.array(gameRewards)
+
+    # The Q value for the remaining actions
+    q_state = self.model.predict(np.stack(gameStates, axis=0), verbose=self.verbose)  # batch x 64 x 64
+
+    # Combine the Q target with the other Q values.
+    # no need for temp_diff_error here
+    q_state = np.reshape(q_state, (len(batch), 64, 64))
+    for idx, move in enumerate(gameMoves):
+      q_state[idx, move[0], move[1]] += q_target[idx//10]
     q_state = np.reshape(q_state, (len(batch), 4096))
 
     # Perform a step of minibatch Gradient Descent.
