@@ -113,8 +113,8 @@ class Agent(object):
         idx1 = (i//10)-1
         idx2 = i//10
         gameStates += tempStates[idx1:idx2]
-        gameMoves += tempStates[idx1:idx2]
-        gameRewards.append(sum(tempStates[idx1:idx2])/10)
+        gameMoves += tempMoves[idx1:idx2]
+        gameRewards.append(sum(tempRewards[idx1:idx2])/10)
 
     # The Q target
     q_target = np.array(rewards) + self.discount * np.max(self.model.predict(np.stack(new_states, axis=0), verbose=self.verbose), axis=1)
@@ -144,7 +144,6 @@ class Agent(object):
       # no need for temp_diff_error here
       q_state = np.reshape(q_state, (len(gameStates), 64, 64))
       for idx, move in enumerate(gameMoves):
-        print(move, move[0], move[1])
         q_state[idx, move[0], move[1]] += q_target[idx//10]
       q_state = np.reshape(q_state, (len(gameStates), 4096))
 
