@@ -58,7 +58,7 @@ class Agent(object):
     
     model = tf.keras.Sequential()
   
-    model.add(tf.keras.layers.InputLayer(input_shape=(8, 8, 8), name="input_layer"))
+    model.add(tf.keras.layers.InputLayer(input_shape=(6, 8, 8), name="input_layer"))
     model.add(tf.keras.layers.Conv2D(filters=16, kernel_size=1, activation='relu', name="block1_conv1"))
     model.add(tf.keras.layers.Conv2D(filters=32, kernel_size=1, activation='relu', name="block1_conv2"))
     model.add(tf.keras.layers.Conv2D(filters=64, kernel_size=1, activation='relu', name="block1_conv3"))
@@ -145,16 +145,16 @@ class Agent(object):
   
   @staticmethod
   def one_hot_encode(boardState, color=chess.WHITE):
-    vector = np.zeros(shape=(8,8,8))
+    vector = np.zeros(shape=(6,8,8))
     for square in range(64):
       piece = str(boardState.piece_at(square))
       if piece != "None":
         vector[PIECE_INDEX_DICT[piece.lower()]][7-square//8][square%8] = (int(piece.isupper()) if color else int(piece.islower())) * 2 - 1
     
-    if boardState.turn == color:
-      vector[6, :, :] = 1 / boardState.fullmove_number
-    if boardState.can_claim_draw():
-      vector[7, :, :] = 1
+    #if boardState.turn == color:
+      #vector[6, :, :] = 1 / boardState.fullmove_number
+    #if boardState.can_claim_draw():
+      #vector[7, :, :] = 1
     
     return vector
   
