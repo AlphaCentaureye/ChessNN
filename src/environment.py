@@ -24,7 +24,6 @@ class Board(object):
   def step(self, action, doRandomMove=True, staticModel=None, networkColor=chess.WHITE, displayBoard=False):
     board_value_before = self.get_board_value()
     self.board.push(action)
-    board_value_after = self.get_board_value()
     repeatPunish = int((self.previousPos == self.encodeState(self.board)).all()) * -2
     isCheck = self.board.is_check()
     if self.updateState:
@@ -55,9 +54,9 @@ class Board(object):
           display(self.board)
         except:
           print(self.board)
-      board_value_after = self.get_board_value()
     else:
       keep_going = False
+    board_value_after = self.get_board_value()
     reward = (board_value_after - board_value_before + repeatPunish + isCheck - 2*self.board.is_check()) * self.rew_mult
     if self.board.is_game_over():
       result = self.board.result()
