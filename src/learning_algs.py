@@ -21,7 +21,7 @@ class Q_learn(object):
         self.reward_trace = []
         self.samp_probabilities = []
 
-    def learn(self, iterations=100, updateThreshold=10, maxMoves=150, explorationRateRatio=250, explRtOffset = 0, backupRate=10, display=False):
+    def learn(self, iterations=100, updateThreshold=10, maxMoves=150, explorationRateRatio=250, explRtOffset = 0, backupRate=10, display=False, randMove=False):
         self.agent.freeze_model()
         for x in range(iterations):
             if backupRate != 0 and x % abs(backupRate) == 0 and x != 0:
@@ -40,12 +40,12 @@ class Q_learn(object):
                 self.agent.freeze_model()
             greedy = True if x == iterations - 1 else False
             self.env.reset()
-            self.play(x, greedy=greedy, maxMoves=maxMoves, explorationRateRatio=explorationRateRatio, explRtOffset=explRtOffset, displayBoard=display)
+            self.play(x, greedy=greedy, maxMoves=maxMoves, explorationRateRatio=explorationRateRatio, explRtOffset=explRtOffset, displayBoard=display, randMove=randMove)
 
         pgn = Game.from_board(self.env.board)
         return pgn
     
-    def play(self, explorationRate, greedy=False, maxMoves=150, explorationRateRatio=250, explRtOffset=0, displayBoard=False):
+    def play(self, explorationRate, greedy=False, maxMoves=150, explorationRateRatio=250, explRtOffset=0, displayBoard=False, randMove=False):
         # max moves is defaulted to 300 as that should never interfere normally, but should prevent it from going on too long in initial training
         keep_going = True
         turnNumber = 0
@@ -83,7 +83,7 @@ class Q_learn(object):
                     move_from = move.from_square
                     move_to = move.to_square
 
-            keep_going, reward = self.env.step(move, doRandomMove=False, staticModel=self.agent.frozen_model, displayBoard=displayBoard)
+            keep_going, reward = self.env.step(move, doRandomMove=randMove, staticModel=self.agent.frozen_model, displayBoard=displayBoard)
             new_state = Agent.one_hot_encode(self.env.board, chess.WHITE) # white for now
             if len(self.memory) > self.memsize:
                 self.memory.pop(0)
