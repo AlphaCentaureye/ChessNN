@@ -50,7 +50,6 @@ class Q_learn(object):
         keep_going = True
         turnNumber = 0
         epsilonGreedy = max(0.05, 1 / (1 + ((explorationRate+explRtOffset) / explorationRateRatio))) if not(greedy) else 0.0
-        self.gameMemory = []
         while keep_going:
             print(explorationRate)
             state = Agent.one_hot_encode(self.env.board, chess.WHITE) # white for now
@@ -89,6 +88,8 @@ class Q_learn(object):
             if len(self.memory) > self.memsize:
                 self.memory.pop(0)
                 self.samp_probabilities.pop(0)
+            if len(self.gameMemory) > (self.memsize//10)*2:
+                self.gameMemory = self.gameMemory[10:]
             turnNumber += 1
             if turnNumber > maxMoves:
                 keep_going = False
