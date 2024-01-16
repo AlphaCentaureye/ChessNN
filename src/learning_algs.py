@@ -23,7 +23,7 @@ class Q_learn(object):
 
     def learn(self, iterations=100, updateThreshold=10, maxMoves=150, explorationRateRatio=250, explRtOffset = 0, backupRate=10, display=False, randMove=False, waitForWins = 2):
         wins = 0
-        ranomMoves = True
+        randomMoves = True
         self.agent.freeze_model()
         for x in range(iterations):
             print("iteration: ", x)
