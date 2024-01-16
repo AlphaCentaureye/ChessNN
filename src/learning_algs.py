@@ -21,9 +21,12 @@ class Q_learn(object):
         self.reward_trace = []
         self.samp_probabilities = []
 
-    def learn(self, iterations=100, updateThreshold=10, maxMoves=150, explorationRateRatio=250, explRtOffset = 0, backupRate=10, display=False, randMove=False):
+    def learn(self, iterations=100, updateThreshold=10, maxMoves=150, explorationRateRatio=250, explRtOffset = 0, backupRate=10, display=False, randMove=False, waitForWins = 2):
+        wins = 0
+        ranomMoves = True
         self.agent.freeze_model()
         for x in range(iterations):
+            print("iteration: ", x)
             if backupRate != 0 and x % abs(backupRate) == 0 and x != 0:
                 try:
                     self.agent.saveNN(os.path.join('/content/savedNNs/', str(x)))
@@ -35,12 +38,21 @@ class Q_learn(object):
                             print('1:', e)
                 except Exception as e:
                     print('2:', e)
-            if x % updateThreshold == 0:
-                print("iteration: ", x)
-                self.agent.freeze_model()
             greedy = True if x == iterations - 1 else False
             self.env.reset()
-            self.play(x, greedy=greedy, maxMoves=maxMoves, explorationRateRatio=explorationRateRatio, explRtOffset=explRtOffset, displayBoard=display, randMove=randMove)
+            if randomMoves and updateThreshold < 0:
+                boardState = self.play(x, greedy=greedy, maxMoves=maxMoves, explorationRateRatio=explorationRateRatio, explRtOffset=explRtOffset, displayBoard=display, randMove=True)
+            else:
+                boardState = self.play(x, greedy=greedy, maxMoves=maxMoves, explorationRateRatio=explorationRateRatio, explRtOffset=explRtOffset, displayBoard=display, randMove=randMove)
+
+            if boardState.result() == '1-0':
+                wins += 1
+            if updateThreshold < 0 and waitForWins == wins:
+                self.agent.freeze_model()
+                wins = 0
+                randomMoves = False
+            elif x % updateThreshold == 0 and updateThreshold >= 0:
+                self.agent.freeze_model()
 
         pgn = Game.from_board(self.env.board)
         return pgn
